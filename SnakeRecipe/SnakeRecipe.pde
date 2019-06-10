@@ -3,6 +3,8 @@
 
 // The Segment class will be used to represent each part of the moving snake.
 
+/*If you ever come back to this program please fix buffered directions!!!! You can reset yourself by hitting two keys at the same time.
+*/
 class Segment {
 
   //2. Create x and y member variables to hold the location of each segment.
@@ -43,8 +45,6 @@ int foodY = (int) random(50) * 10;
 
 //int foodX = ((int)random(50)*10);
 
-
-
 void setup() {
 
   // 9. Set the size of your sketch (500 by 500).
@@ -55,15 +55,19 @@ void setup() {
   frameRate(20);
 }
 
+Boolean pressedKey;
 void draw() {
 
   background(0);
   //12. Call the manageTail, drawFood, drawSnake, move, and collision methods.
+  pressedKey = false;
   manageTail();
   drawFood();
   drawSnake();
   move();
   collision();
+  textSize(50);
+  text(food,10,50);
 }
 
 
@@ -103,7 +107,7 @@ void move() {
     break;
   case "right":
     head.setX(head.getX() + 10);
-    // mystery code goes here 
+    // mystery code goes here
     break;
   }
 
@@ -116,20 +120,23 @@ void move() {
 // 18. Complete the keyPressed method below. Use if statements to set your direction variable depending on what key is pressed.
 
 void keyPressed() {
-  if(keyCode == 37 && dir != "right") {
-    //left
-    dir = "left";
-  }else if(keyCode == 38 && dir != "down") {
-    //up
-    dir = "up";
-  }else if(keyCode == 39 && dir != "left") {
-    //right
-    dir = "right";
-  }else if(keyCode == 40 && dir != "up") {
-    //down
-    dir = "down";
-  }
   
+  if(pressedKey == false) {
+    if(keyCode == 37 && dir != "right") {
+      //left
+      dir = "left";
+    }else if(keyCode == 38 && dir != "down") {
+      //up
+      dir = "up";
+    }else if(keyCode == 39 && dir != "left") {
+      //right
+      dir = "right";
+    }else if(keyCode == 40 && dir != "up") {
+      //down
+      dir = "down";
+    }
+    pressedKey = true;
+  }
 }
 
 
@@ -194,6 +201,9 @@ void manageTail() {
 
 void drawTail() {
     // Draw a 10 by 10 rectangle for each Segment in your snake ArrayList.
+    for(Segment under: tail) {
+      rect(under.getX(),under.getY(),10,10);
+    }
 }
 
 
@@ -202,7 +212,11 @@ void drawTail() {
 void checkTailCollision() {
 
   // If your head has the same location as one of your segments...
-
+  for(Segment under: tail) {
+    if(head.getX() == under.getX() && head.getY() == under.getY()) {
+      food = 1;
+    }
+  }
   // reset your food variable
 
   //Call this method at the beginning of your manageTail method.
